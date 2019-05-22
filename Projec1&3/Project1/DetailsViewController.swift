@@ -12,12 +12,16 @@ class DetailsViewController: UIViewController {
 
     @IBOutlet weak var imageView: UIImageView!
     var selectedImage: String?
+
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.largeTitleDisplayMode = .never
         if let imgName = selectedImage {
             imageView.image = UIImage(named: imgName)
         }
+        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            barButtonSystemItem: .action, target: self, action: #selector(shareTapped))
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -28,5 +32,22 @@ class DetailsViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         navigationController?.hidesBarsOnTap = false
+    }
+    
+    @objc func shareTapped() {
+        var dataArray: [Data] = []
+        if let imgData = imageView.image?.jpegData(compressionQuality: 0.8) {
+            dataArray.append(imgData)
+        } else {
+            print("No img found")
+        }
+        if let nameData = selectedImage?.data(using: .utf8) {
+            dataArray.append(nameData)
+        }
+        
+        let vc = UIActivityViewController(activityItems: dataArray, applicationActivities: [])
+        vc.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
+        present(vc, animated: true)
+        
     }
 }

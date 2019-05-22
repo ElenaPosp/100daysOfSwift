@@ -46,6 +46,10 @@ class ViewController: UIViewController {
                      "spain", "uk", "us"]
         setupBorders()
         askQuestion()
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            barButtonSystemItem: .organize,
+            target: self,
+            action: #selector(scoreTapped))
     }
 
     func askQuestion(_ sender: UIAlertAction! = nil) {
@@ -73,6 +77,10 @@ class ViewController: UIViewController {
         let action = UIAlertAction(title: "Continue", style: .default, handler: nil)
         ac.addAction(action)
         present(ac, animated: true)
+    }
+    
+    @objc func scoreTapped() {
+        showAlert(title: "Your score is \(score)", message: "")
     }
 }
 
