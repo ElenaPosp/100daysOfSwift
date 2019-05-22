@@ -17,28 +17,33 @@ class ViewController: UIViewController {
     var correctAnswer: Int = 0
     var score = 0
     var countries = [String]()
-    
+    var questionCount = 0
+
     @IBAction func buttonTapped(_ sender: UIButton) {
-        var alertTitle = ""
+        questionCount += 1
         if sender.tag == correctAnswer {
-            alertTitle = "Correct"
             score += 1
         } else {
-            alertTitle = "Wrong"
             score -= 1
+            showAlert(title: "Wrong!", message: "It's \(countries[sender.tag])")
         }
-        showAlert(title: alertTitle)
+
+        if questionCount % 10 == 0 {
+            let message = """
+            You answered 10 questions!
+            Your score is \(score)
+            """
+            showAlert(title: "Perfect!", message: message)
+        }
+        askQuestion()
     }
 
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         countries += ["estonia", "france", "germany",
                      "ireland", "italy", "monaco",
                      "nigeria", "poland", "russia",
                      "spain", "uk", "us"]
-        
         setupBorders()
         askQuestion()
     }
@@ -50,25 +55,22 @@ class ViewController: UIViewController {
         button1.setImage(UIImage(named: countries.first ?? ""), for: .normal)
         button2.setImage(UIImage(named: countries[1]), for: .normal)
         button3.setImage(UIImage(named: countries[2]), for: .normal)
-        
-        title = countries[correctAnswer].uppercased()
+
+        title = countries[correctAnswer].uppercased() + "? Your score is \(score)"
     }
-    
+
     private func setupBorders() {
         button1.layer.borderWidth = 1
         button2.layer.borderWidth = 1
         button3.layer.borderWidth = 1
-
         button1.layer.borderColor = UIColor.lightGray.cgColor
         button2.layer.borderColor = UIColor.lightGray.cgColor
         button3.layer.borderColor = UIColor.lightGray.cgColor
     }
-    
-    private func showAlert(title: String) {
-        let message = "Your score is \(score)"
+
+    private func showAlert(title: String, message: String) {
         let ac = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        
-        let action = UIAlertAction(title: "Continue", style: .default, handler: askQuestion)
+        let action = UIAlertAction(title: "Continue", style: .default, handler: nil)
         ac.addAction(action)
         present(ac, animated: true)
     }
