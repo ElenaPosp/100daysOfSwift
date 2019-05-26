@@ -67,12 +67,13 @@ class ViewController: UIViewController, WKNavigationDelegate {
     }
 
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        guard keyPath == "estimatedProgress" else { return
+        guard keyPath == "estimatedProgress" else { return }
         progressView.progress = Float(webView.estimatedProgress)
     }
 
-    func webView(_ : WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
-        
+    func webView(_ : WKWebView,
+                 decidePolicyFor navigationAction: WKNavigationAction,
+                 decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         let url = navigationAction.request.url
         guard let host = url?.host else {
             decisionHandler(.cancel)
