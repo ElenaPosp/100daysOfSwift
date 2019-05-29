@@ -27,7 +27,7 @@ class ViewController: UITableViewController {
         startGame()
     }
     
-    private func startGame() {
+    @objc private func startGame() {
         title = allWords.randomElement()
         usedWords.removeAll(keepingCapacity: true)
         tableView.reloadData()
@@ -35,6 +35,7 @@ class ViewController: UITableViewController {
     
     private func setupNav() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(promptForAnswer))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(startGame))
     }
     
     @objc func promptForAnswer() {
@@ -51,24 +52,23 @@ class ViewController: UITableViewController {
     }
     
     private func submit(_ answer: String) {
-        let errTitle: String
-//        let errMessage: String
         let lowerAnser = answer.lowercased()
         if isPossible(word: lowerAnser){
             if isOriginal(word: lowerAnser) {
                 if isReal(word: lowerAnser) {
-                    usedWords.insert(answer, at: 0)
+                    usedWords.insert(lowerAnser, at: 0)
                     let indexPath = IndexPath(row: 0, section: 0)
                     tableView.insertRows(at: [indexPath], with: .automatic)
                     return
-                } else { errTitle = "Not real" }
-            } else { errTitle = "Not original" }
-        } else { errTitle = "Not possible" }
-        
-        let ac = UIAlertController(title: errTitle, message: nil, preferredStyle: .alert)
+                } else {  showAlert(title: "Not real") }
+            } else {  showAlert(title: "Not original") }
+        } else {  showAlert(title: "Not possible") }
+    }
+    
+    private func showAlert(title: String, message: String? = nil) {
+        let ac = UIAlertController(title: title, message: message, preferredStyle: .alert)
         ac.addAction(UIAlertAction(title: "Ok", style: .default))
         present(ac, animated: true)
-        
     }
     
     private func isPossible(word: String) -> Bool {
@@ -90,8 +90,8 @@ class ViewController: UITableViewController {
         let range = NSRange(location: 0, length: word.utf16.count)
         let misspelledRange = checker.rangeOfMisspelledWord(in: word, range: range,
                                                             startingAt: 0, wrap: false, language: "en")
-        return misspelledRange.location == NSNotFound
-        
+        let isReal = (word != title)&&(word.count>2)&&(misspelledRange.location == NSNotFound)
+        return isReal
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
