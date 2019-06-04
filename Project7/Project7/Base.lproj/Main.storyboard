@@ -58,7 +58,7 @@
         <scene sceneID="Wl9-0G-iKU">
             <objects>
                 <navigationController storyboardIdentifier="NavController" automaticallyAdjustsScrollViewInsets="NO" id="YHd-5J-nQb" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" systemItem="favorites" id="spo-I1-wEF"/>
+                    <tabBarItem key="tabBarItem" systemItem="recents" id="spo-I1-wEF"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="tk7-AI-jcF">
                         <rect key="frame" x="0.0" y="44" width="414" height="44"/>

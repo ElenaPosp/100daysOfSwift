@@ -13,6 +13,7 @@
 		0BEE1A8322A454F800910910 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0BEE1A8222A454F800910910 /* Assets.xcassets */; };
 		0BEE1A8622A454F800910910 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0BEE1A8422A454F800910910 /* LaunchScreen.storyboard */; };
 		0BEE1A8E22A4582A00910910 /* Structs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BEE1A8D22A4582A00910910 /* Structs.swift */; };
+		0BEE1A9022A4C98000910910 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BEE1A8F22A4C98000910910 /* DetailViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		0BEE1A8522A454F800910910 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		0BEE1A8722A454F800910910 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0BEE1A8D22A4582A00910910 /* Structs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Structs.swift; sourceTree = "<group>"; };
+		0BEE1A8F22A4C98000910910 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +60,7 @@
 			children = (
 				0BEE1A7B22A454F700910910 /* AppDelegate.swift */,
 				0BEE1A7D22A454F700910910 /* ViewController.swift */,
+				0BEE1A8F22A4C98000910910 /* DetailViewController.swift */,
 				0BEE1A8D22A4582A00910910 /* Structs.swift */,
 				0BEE1A7F22A454F700910910 /* Main.storyboard */,
 				0BEE1A8222A454F800910910 /* Assets.xcassets */,
@@ -141,6 +144,7 @@
 				0BEE1A7E22A454F700910910 /* ViewController.swift in Sources */,
 				0BEE1A7C22A454F700910910 /* AppDelegate.swift in Sources */,
 				0BEE1A8E22A4582A00910910 /* Structs.swift in Sources */,
+				0BEE1A9022A4C98000910910 /* DetailViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
