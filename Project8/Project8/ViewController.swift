@@ -10,6 +10,10 @@ import UIKit
 
 class ViewController: UIViewController {
 
+    struct Colors {
+        static let green = UIColor(red: 0.1, green: 0.5, blue: 0.3, alpha: 1)
+        static let red = UIColor(red: 0.6, green: 0.2, blue: 0.2, alpha: 1)
+    }
     var cluesLabel: UILabel!
     var answersLabel: UILabel!
     var currentAnswer: UITextField!
@@ -20,6 +24,7 @@ class ViewController: UIViewController {
     var solutions = [String]()
 
     var level = 1
+    var answered = 0
     var score = 0 {
         didSet {
             scoreLabel.text = "Score: \(score)"
@@ -45,6 +50,10 @@ class ViewController: UIViewController {
         let submit = UIButton(type: .system)
         submit.translatesAutoresizingMaskIntoConstraints = false
         submit.setTitle("SUBMIT", for: .normal)
+        submit.layer.borderWidth = 1
+        submit.layer.cornerRadius = 5
+        submit.tintColor = Colors.green
+        submit.layer.borderColor = Colors.green.cgColor
         submit.addTarget(self, action: #selector(submitTapped), for: .touchUpInside)
         view.addSubview(submit)
 
@@ -52,6 +61,10 @@ class ViewController: UIViewController {
         clear.translatesAutoresizingMaskIntoConstraints = false
         clear.addTarget(self, action: #selector(clearTapped), for: .touchUpInside)
         clear.setTitle("CLEAR", for: .normal)
+        clear.tintColor = Colors.red
+        clear.layer.borderWidth = 1
+        clear.layer.cornerRadius = 5
+        clear.layer.borderColor = Colors.red.cgColor
         view.addSubview(clear)
 
         let buttonsView = UIView()
@@ -62,10 +75,11 @@ class ViewController: UIViewController {
             submit.topAnchor.constraint(equalTo: currentAnswer.bottomAnchor),
             submit.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: -100),
             submit.heightAnchor.constraint(equalToConstant: 44),
+            submit.widthAnchor.constraint(equalToConstant: 150),
             clear.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 100),
             clear.centerYAnchor.constraint(equalTo: submit.centerYAnchor),
             clear.heightAnchor.constraint(equalToConstant: 44),
-
+            clear.widthAnchor.constraint(equalToConstant: 150),
             buttonsView.widthAnchor.constraint(equalToConstant: 750),
             buttonsView.heightAnchor.constraint(equalToConstant: 320),
             buttonsView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -85,6 +99,8 @@ class ViewController: UIViewController {
                 
                 let frame = CGRect(x: column * width, y: row * higth, width: width, height: higth)
                 letterButton.frame = frame
+                letterButton.layer.borderWidth = 0.5
+                letterButton.layer.cornerRadius = 5
                 buttonsView.addSubview(letterButton)
                 letterButtons.append(letterButton)
             }
@@ -155,9 +171,7 @@ class ViewController: UIViewController {
     }
 
     @objc func letterTapped(_ sender: UIButton) {
-        
         guard let buttonTitle = sender.titleLabel?.text else { return }
-        
         currentAnswer.text = currentAnswer.text?.appending(buttonTitle)
         activatedButtons.append(sender)
         sender.isHidden = true
@@ -168,22 +182,25 @@ class ViewController: UIViewController {
 
         if let solutionPosition = solutions.firstIndex(of: answerText) {
             activatedButtons.removeAll()
-
             var splitAnswers = answersLabel.text?.components(separatedBy: "\n")
             splitAnswers?[solutionPosition] = answerText
             answersLabel.text = splitAnswers?.joined(separator: "\n")
-
             currentAnswer.text = ""
             score += 1
+            answered += 1
 
-            if score % 7 == 0 {
+            if answered % 7 == 0 {
                 let ac = UIAlertController(title: "Well done",
                                            message: "Are you ready for next level?",
                                            preferredStyle: .alert)
-
                 ac.addAction(UIAlertAction(title: "Go!", style: .default, handler: levelUp))
                 present(ac, animated: true)
             }
+        } else {
+            let ac = UIAlertController(title: "Wrong", message: nil, preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "Continue", style: .cancel, handler: nil))
+            present(ac, animated: true)
+            score -= 1
         }
     }
 
@@ -191,10 +208,7 @@ class ViewController: UIViewController {
         level += 1
         solutions.removeAll(keepingCapacity: true)
         loadLevel()
-
-        for button in letterButtons {
-            button.isHidden = false
-        }
+        for b in letterButtons { b.isHidden = false }
     }
 
     @objc func clearTapped(_ sender: UIButton) {
@@ -220,7 +234,6 @@ class ViewController: UIViewController {
                     let clue = parts[1]
 
                     clueString += "\(index + 1). \(clue)\n"
-
                     let solutionWord = answer.replacingOccurrences(of: "|", with: "")
                     solutionString += "\(solutionWord.count) letters\n"
                     solutions.append(solutionWord)
