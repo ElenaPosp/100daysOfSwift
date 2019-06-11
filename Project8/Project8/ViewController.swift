@@ -26,9 +26,7 @@ class ViewController: UIViewController {
     var level = 1
     var answered = 0
     var score = 0 {
-        didSet {
-            scoreLabel.text = "Score: \(score)"
-        }
+        didSet { scoreLabel.text = "Score: \(score)" }
     }
 
     override func loadView() {
@@ -43,7 +41,9 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        loadLevel()
+        DispatchQueue.global().async { [weak self] in
+            self?.loadLevel()
+        }
     }
 
     func setupButtons() {
@@ -207,8 +207,12 @@ class ViewController: UIViewController {
     func levelUp(action: UIAlertAction) {
         level += 1
         solutions.removeAll(keepingCapacity: true)
-        loadLevel()
-        for b in letterButtons { b.isHidden = false }
+        DispatchQueue.global().async { [weak self] in
+            self?.loadLevel()
+            DispatchQueue.main.async {
+                for b in self?.letterButtons ?? [] { b.isHidden = false }
+            }
+        }
     }
 
     @objc func clearTapped(_ sender: UIButton) {
@@ -243,15 +247,17 @@ class ViewController: UIViewController {
                 }
             }
         }
-
-        cluesLabel.text = clueString.trimmingCharacters(in: .whitespacesAndNewlines)
-        answersLabel.text = solutionString.trimmingCharacters(in: .whitespacesAndNewlines)
-
         letterButtons.shuffle()
 
-        if letterButtons.count == letterBits.count {
-            for i in 0..<letterButtons.count {
-                letterButtons[i].setTitle(letterBits[i], for: .normal)
+        DispatchQueue.main.async { [weak self] in
+            guard let strSelf = self else { return }
+            strSelf.cluesLabel.text = clueString.trimmingCharacters(in: .whitespacesAndNewlines)
+            strSelf.answersLabel.text = solutionString.trimmingCharacters(in: .whitespacesAndNewlines)
+
+            if strSelf.letterButtons.count == letterBits.count {
+                for i in 0..<strSelf.letterButtons.count {
+                    self?.letterButtons[i].setTitle(letterBits[i], for: .normal)
+                }
             }
         }
     }

@@ -13,18 +13,28 @@ class ViewController: UITableViewController {
     var urlString: String = ""
     var petitions = [Petition]()
     var stringForSearch = "" {
-        didSet {
-            petitions = petitions.filter { (petition) -> Bool in
-                petition.body.localizedCaseInsensitiveContains(stringForSearch) ||  petition.title.localizedCaseInsensitiveContains(stringForSearch)
+        didSet { executeFiltering() }
+    }
+
+    func executeFiltering() {
+        DispatchQueue.global().async { [weak self] in
+            guard let strSelf = self else {return}
+            strSelf.setup()
+            if strSelf.stringForSearch == "" { return }
+            let a = strSelf.petitions
+            strSelf.petitions = a.filter { (petition) -> Bool in
+                let inBody = petition.body.lowercased().contains(strSelf.stringForSearch.lowercased())
+                let inTitle = petition.title.lowercased().contains(strSelf.stringForSearch.lowercased())
+                return inBody || inTitle
             }
-            tableView.reloadData()
+            strSelf.tableView.performSelector(onMainThread: #selector(UITableView.reloadData),
+                                              with: nil, waitUntilDone: false)
         }
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        setupURL()
+        setup()
         addNavItems()
     }
     
@@ -51,7 +61,7 @@ class ViewController: UITableViewController {
         present(ac, animated: true)
     }
 
-    private func setupURL() {
+    private func setup() {
         if tabBarController?.tabBarItem.tag == 0 {
             // let urlString = "https://api.whitehouse.gov/v1/petitions.json?limit=100"
             urlString = "https://www.hackingwithswift.com/samples/petitions-1.json"
@@ -79,7 +89,7 @@ class ViewController: UITableViewController {
 
         if let jsonPetitions = try? decider.decode(Petitions.self, from: json) {
             petitions = jsonPetitions.results
-            tableView.reloadData()
+            tableView.performSelector(onMainThread: #selector(UITableView.reloadData), with: nil, waitUntilDone: false)
         }
     }
 
