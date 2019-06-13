@@ -10,61 +10,77 @@ import UIKit
 
 class ViewController: UIViewController {
 
-    var letterButtons = [UIButton]()
-    var targetWordTextField = UITextField()
-    var words = [String]()
-    
+    var enterLetterField = UITextField()
+    var targetWordLabel = UILabel()
+    var enterButton = UIButton()
+    var words = ["world","peace","temptation"]
+    var targetWord: String = ""
+    var stringToDisplay: String = ""
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupWordView()
-        setupButtons()
-        
         startGame()
+        setupViews()
+        enterLetterField.delegate = self
     }
-    
+
     private func startGame() {
+        words.shuffle()
+        targetWord = words.first ?? ""
+    }
+
+    @objc func letterEntered() {
+        guard let character = enterLetterField.text?.first else { return }
+        for ch in targetWord { ch == character ? addCharacter(ch) : decrementScore() }
+        enterLetterField.text = ""
+    }
+
+    private func addCharacter(_ character: Character) {
         
     }
 
-    private func setupButtons() {
-        let buttonsView = UIView()
-        buttonsView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(buttonsView)
-        
-        NSLayoutConstraint.activate([
-            buttonsView.leadingAnchor.constraint(equalTo: view.layoutMarginsGuide.leadingAnchor, constant: -20),
-            buttonsView.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor,constant: -20),
-            buttonsView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            buttonsView.topAnchor.constraint(equalTo: view.centerYAnchor, constant: 20),
-            buttonsView.bottomAnchor.constraint(equalTo: view.layoutMarginsGuide.bottomAnchor, constant: 20)
-            ])
-        
-        let width: Int = Int(view.frame.width/5)
-        let higth: Int = Int(view.frame.height/10)
-        
-        for row in 0..<4 {
-            for column in 0..<5 {
-                let letterButton = UIButton(type: .system)
-                letterButton.titleLabel?.font = UIFont.systemFont(ofSize: 14)
-                letterButton.setTitle("WWW", for: .normal)
-                letterButton.addTarget(self, action: #selector(letterTapped), for: .touchUpInside)
-                
-                let frame = CGRect(x: column * width, y: row * higth, width: width, height: higth)
-                letterButton.frame = frame
-                letterButton.layer.borderWidth = 0.5
-                letterButton.layer.cornerRadius = 5
-                buttonsView.addSubview(letterButton)
-                letterButtons.append(letterButton)
-            }
-        }
-    }
-
-    @objc func letterTapped() {
-        
+    private func decrementScore() {
     }
     
-    private func setupWordView() {
-        
+    private func setupViews() {
+        enterLetterField.translatesAutoresizingMaskIntoConstraints = false
+        enterLetterField.placeholder = "Enter letter"
+        enterLetterField.layer.borderWidth = 0.5
+        enterLetterField.textAlignment = .center
+        view.addSubview(enterLetterField)
+
+        targetWordLabel.translatesAutoresizingMaskIntoConstraints = false
+        targetWordLabel.font = UIFont.systemFont(ofSize: 24)
+        targetWordLabel.textColor = .blue
+        stringToDisplay = " "
+        for _ in targetWord { stringToDisplay += "_ " }
+        targetWordLabel.text = stringToDisplay
+        targetWordLabel.textAlignment = .center
+        view.addSubview(targetWordLabel)
+
+        enterButton.translatesAutoresizingMaskIntoConstraints = false
+        enterButton.backgroundColor = .gray
+        enterButton.setTitle("Enter", for: .normal)
+        enterButton.addTarget(self, action: #selector(letterEntered), for: .touchUpInside)
+        view.addSubview(enterButton)
+
+        NSLayoutConstraint.activate([
+            enterLetterField.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor,constant: 320),
+            enterLetterField.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            targetWordLabel.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor,constant: 120),
+            targetWordLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            enterButton.topAnchor.constraint(equalTo: enterLetterField.bottomAnchor,constant: 20),
+            enterButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            enterButton.widthAnchor.constraint(equalToConstant: 80),
+            enterButton.heightAnchor.constraint(equalToConstant: 30)
+        ])
+        enterLetterField.allowsEditingTextAttributes = false
     }
 }
 
+extension ViewController: UITextFieldDelegate {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        let count = textField.text?.count ?? 0
+        return count > 0 ? false : true
+    }
+}
