@@ -14,9 +14,9 @@ class ViewController: UIViewController {
     var targetWordLabel = UILabel()
     var enterButton = UIButton()
     var scoreLabel = UILabel()
-    var words = ["world","peace","temptation"]
-    var targetWord: String = ""
-    var stringToDisplay: String = ""
+    var words = ["world","peace","temptation","caption"]
+    var targetWord: [String] = []
+    var stringToDisplay: [String] = []
     var score = 2 {
         didSet {
             scoreLabel.text = "\(score) attempts left"
@@ -32,36 +32,51 @@ class ViewController: UIViewController {
 
     func startGame() {
         words.shuffle()
-        targetWord = words.first ?? ""
-    }
-    
-    func startGame(_ sender: UIAlertController) {
-        words.shuffle()
-        targetWord = words.first ?? ""
+        targetWord = words.first?.map{ (ch) -> String in return "\(ch)" } ?? []
+
+        score = 7
+        stringToDisplay = []
+        for _ in targetWord { stringToDisplay.append("_") }
+        targetWordLabel.text = stringToDisplay.joined()
     }
 
     @objc func letterEntered() {
-        guard let character = enterLetterField.text?.lowercased().first else { return }
-        for ch in targetWord {
-            if ch == character {
-                addCharacter(ch)
-                return
-            }
+        guard let character = enterLetterField.text?.lowercased() else { return }
+        var positions = [Int]()
+        for (index, ch) in targetWord.enumerated() {
+            if ch == character { positions.append(index) }
         }
-        decrementScore()
+
+        if positions.isEmpty {
+            decrementScore()
+        } else {
+            addCharacter(indexes: positions)
+            checkForFinish()
+        }
         enterLetterField.text = ""
     }
 
-    private func addCharacter(_ character: Character) {
-        
+    private func checkForFinish() {
+        if !stringToDisplay.contains("_") {
+            showWinAlert()
+        }
+    }
+
+    private func addCharacter(indexes: [Int]) {
+
+        for (index,value) in targetWord.enumerated() {
+            if indexes.contains(index) {
+                stringToDisplay[index] = value
+            }
+        }
+        targetWordLabel.text = stringToDisplay.joined()
     }
 
     private func decrementScore() {
         score -= 1
         if score == 0 { showLoseAlert() }
-        
     }
-    
+
     private func setupViews() {
         enterLetterField.translatesAutoresizingMaskIntoConstraints = false
         enterLetterField.placeholder = "Enter letter"
@@ -71,14 +86,10 @@ class ViewController: UIViewController {
         targetWordLabel.translatesAutoresizingMaskIntoConstraints = false
         targetWordLabel.font = UIFont.systemFont(ofSize: 24)
         targetWordLabel.textColor = .blue
-        stringToDisplay = ""
-        for _ in targetWord { stringToDisplay += "_" }
-        targetWordLabel.text = stringToDisplay
         targetWordLabel.textAlignment = .center
         view.addSubview(targetWordLabel)
 
         enterButton.translatesAutoresizingMaskIntoConstraints = false
-//        enterButton.backgroundColor = .gray
         enterButton.setTitle("Enter", for: .normal)
         enterButton.setTitleColor(.blue, for: .normal)
         enterButton.addTarget(self, action: #selector(letterEntered), for: .touchUpInside)
@@ -101,11 +112,15 @@ class ViewController: UIViewController {
         ])
         enterLetterField.allowsEditingTextAttributes = false
     }
-    
+
     func showLoseAlert() {
         showAlert(text: "You lose")
     }
-    
+
+    func showWinAlert() {
+        showAlert(text: "You win!")
+    }
+
     func showAlert(text: String) {
         let ac = UIAlertController(title: text, message: nil, preferredStyle: .alert)
         ac.addAction(UIAlertAction(title: "Start new game", style: .default) { [weak self] _ in
