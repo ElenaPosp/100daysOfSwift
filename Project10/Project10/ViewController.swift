@@ -49,7 +49,7 @@ class ViewController: UICollectionViewController {
         return paths[0]
     }
     
-    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    @objc func rename(at indexPath: IndexPath) {
         let ac = UIAlertController(title: "Enter the name", message: nil, preferredStyle: .alert)
         let action1 = UIAlertAction(title: "Ok", style: .default) { [weak self] _ in
             self?.persons[indexPath.item].name = ac.textFields?[0].text ?? ""
@@ -59,6 +59,21 @@ class ViewController: UICollectionViewController {
         ac.addAction(action1)
         ac.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         present(ac, animated: false)
+    }
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+
+        let ash = UIAlertController(title: "Select action", message: nil, preferredStyle: .actionSheet)
+        let renameAction = UIAlertAction(title: "Rename", style: .default) { [weak self] _ in
+            self?.rename(at: indexPath)
+        }
+        let deleteAction = UIAlertAction(title: "Delete", style: .destructive) { [weak self] (_) in
+            self?.persons.remove(at: indexPath.item)
+            collectionView.reloadData()
+        }
+        ash.addAction(renameAction)
+        ash.addAction(deleteAction)
+        ash.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        present(ash,animated: true)
     }
 }
 
