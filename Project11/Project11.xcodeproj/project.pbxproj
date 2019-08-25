@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0BE3804923128DE2001D8251 /* FireParticles.sks in Resources */ = {isa = PBXBuildFile; fileRef = 0BE3804823128DE2001D8251 /* FireParticles.sks */; };
+		0BE3804D23129052001D8251 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0BE3804B23129052001D8251 /* Assets.xcassets */; };
 		0BF7E1A122B9666B0091EE33 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BF7E1A022B9666B0091EE33 /* AppDelegate.swift */; };
 		0BF7E1A322B9666B0091EE33 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 0BF7E1A222B9666B0091EE33 /* GameScene.sks */; };
 		0BF7E1A722B9666B0091EE33 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BF7E1A622B9666B0091EE33 /* GameScene.swift */; };
@@ -17,6 +19,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0BE3804823128DE2001D8251 /* FireParticles.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = FireParticles.sks; sourceTree = "<group>"; };
+		0BE3804B23129052001D8251 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0BF7E19D22B9666B0091EE33 /* Project11.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Project11.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0BF7E1A022B9666B0091EE33 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0BF7E1A222B9666B0091EE33 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
@@ -42,6 +46,7 @@
 		0BF7E19422B9666B0091EE33 = {
 			isa = PBXGroup;
 			children = (
+				0BE3804B23129052001D8251 /* Assets.xcassets */,
 				0BF7E19F22B9666B0091EE33 /* Project11 */,
 				0BF7E19E22B9666B0091EE33 /* Products */,
 			);
@@ -65,6 +70,7 @@
 				0BF7E1AA22B9666B0091EE33 /* Main.storyboard */,
 				0BF7E1AD22B9666C0091EE33 /* Assets.xcassets */,
 				0BF7E1AF22B9666C0091EE33 /* LaunchScreen.storyboard */,
+				0BE3804823128DE2001D8251 /* FireParticles.sks */,
 				0BF7E1B222B9666C0091EE33 /* Info.plist */,
 			);
 			path = Project11;
@@ -130,6 +136,8 @@
 			files = (
 				0BF7E1AC22B9666B0091EE33 /* Main.storyboard in Resources */,
 				0BF7E1A322B9666B0091EE33 /* GameScene.sks in Resources */,
+				0BE3804923128DE2001D8251 /* FireParticles.sks in Resources */,
+				0BE3804D23129052001D8251 /* Assets.xcassets in Resources */,
 				0BF7E1AE22B9666C0091EE33 /* Assets.xcassets in Resources */,
 				0BF7E1B122B9666C0091EE33 /* LaunchScreen.storyboard in Resources */,
 			);
