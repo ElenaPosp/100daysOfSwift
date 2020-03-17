@@ -10,13 +10,15 @@ import UIKit
 
 class DetailsViewController: UIViewController {
 
-    @IBOutlet private weak var imageView: UIImageView!
+    @IBOutlet weak var imageView: UIImageView!
     var selectedImage: String?
 
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.largeTitleDisplayMode = .never
-        imageView.image = getImage()
+        if let path = getImagePath() {
+            imageView.image = UIImage(contentsOfFile: path.path)
+        }
         navigationItem.rightBarButtonItem = UIBarButtonItem(
             barButtonSystemItem: .action, target: self, action: #selector(shareTapped))
     }
@@ -30,8 +32,8 @@ class DetailsViewController: UIViewController {
         super.viewWillDisappear(animated)
         navigationController?.hidesBarsOnTap = false
     }
-
-    @objc private func shareTapped() {
+    
+    @objc func shareTapped() {
         var dataArray: [Data] = []
         if let imgData = imageView.image?.jpegData(compressionQuality: 0.8) {
             dataArray.append(imgData)
@@ -47,11 +49,9 @@ class DetailsViewController: UIViewController {
         present(vc, animated: true)
         
     }
-
-    private func getImage() -> UIImage? {
-        guard let imageName = selectedImage else { return nil }
+    func getImagePath() -> URL? {
+        guard let name = selectedImage else { return nil }
         let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
-        let path = paths[0].appendingPathComponent(imageName)
-        return UIImage(contentsOfFile: path.path)
+        return paths[0].appendingPathComponent(name)
     }
 }
