@@ -21,12 +21,19 @@ class DetailsViewController: UIViewController {
         }
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(
-            barButtonSystemItem: .action, target: self, action: #selector(shareTapped))
+            barButtonSystemItem: .action, target: self, action: #selector(shareTapped)
+        )
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.hidesBarsOnTap = true
+        guard let selectedImage = selectedImage else { return }
+        if let count = UserDefaults.standard.value(forKey: selectedImage) as? Int {
+            UserDefaults.standard.set(count+1, forKey: selectedImage)
+        } else {
+            UserDefaults.standard.set(1, forKey: selectedImage)
+        }
     }
     
     override func viewWillDisappear(_ animated: Bool) {

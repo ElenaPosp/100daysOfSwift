@@ -19,8 +19,7 @@ class ViewController: UICollectionViewController {
                                                            action: #selector(addNewPerson))
         let defaults = UserDefaults.standard
         if let savedData = defaults.object(forKey: "persons") as? Data {
-            let dencoder = JSONDecoder()
-            if let decodedPersons = try? dencoder.decode([Person].self, from: savedData) {
+            if let decodedPersons = try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(savedData) as? [Person] {
                 persons = decodedPersons
             }
         }
@@ -71,9 +70,10 @@ class ViewController: UICollectionViewController {
         ac.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         present(ac, animated: false)
     }
+
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
 
-        let ash = UIAlertController(title: "Select action", message: nil, preferredStyle: .actionSheet)
+        let ac = UIAlertController(title: "Select action", message: nil, preferredStyle: .actionSheet)
         let renameAction = UIAlertAction(title: "Rename", style: .default) { [weak self] _ in
             self?.rename(at: indexPath)
         }
@@ -82,20 +82,17 @@ class ViewController: UICollectionViewController {
             self?.save()
             collectionView.reloadData()
         }
-        ash.addAction(renameAction)
-        ash.addAction(deleteAction)
-        ash.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        present(ash,animated: true)
+        ac.addAction(renameAction)
+        ac.addAction(deleteAction)
+        ac.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        present(ac,animated: true)
     }
     
     func save() {
-        let encoder = JSONEncoder()
-        if let personsData = try? encoder.encode(persons) {
+        if let savedData = try? NSKeyedArchiver.archivedData(withRootObject: persons, requiringSecureCoding: false) {
             let defaults = UserDefaults.standard
-            defaults.set(personsData, forKey: "persons")
+            defaults.set(savedData, forKey: "persons")
             
-        } else {
-            print("error")
         }
     }
 }
