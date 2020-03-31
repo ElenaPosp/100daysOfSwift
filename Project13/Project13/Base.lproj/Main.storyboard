@@ -64,7 +64,7 @@
                                 </constraints>
                                 <state key="normal" title="Change filter"/>
                                 <connections>
-                                    <action selector="didTapChangeFilter:" destination="BYZ-38-t0r" eventType="touchUpInside" id="x3A-EF-dQ4"/>
+                                    <action selector="didTapChangeFilter:" destination="BYZ-38-t0r" eventType="touchUpInside" id="qdl-I0-b3G"/>
                                 </connections>
                             </button>
                         </subviews>
