@@ -11,9 +11,11 @@ import UIKit
 
 final class ViewController: UIViewController {
 
-    @IBOutlet weak var imageView: UIImageView!
-    @IBOutlet weak var intensitySlider: UISlider!
-
+    @IBOutlet private weak var imageView: UIImageView!
+    @IBOutlet private weak var intensitySlider: UISlider!
+    @IBOutlet private weak var radiusSlader: UISlider!
+    @IBOutlet private weak var filterButton: UIButton!
+    
     private var currentImage: UIImage?
     private var context: CIContext?
     private var currentFilter: CIFilter?
@@ -48,18 +50,41 @@ final class ViewController: UIViewController {
     }
     
     @IBAction func didTapSave() {
+        guard let image = imageView.image else {
+            showOKAlertWith(title: "You have no image")
+            return
+        }
+        UIImageWriteToSavedPhotosAlbum(image, self, #selector(image(_:didFinishSavingWithError:contextInfo:)), nil)
     }
 
     @IBAction func intensityChanged() {
         applyProcessing()
     }
-
+    @IBAction func radiusChanged() {
+        applyProcessing()
+    }
+    
     @objc
     private func didTapAdd() {
         let picker = UIImagePickerController()
         picker.allowsEditing = true
         picker.delegate = self
         present(picker, animated: true)
+    }
+    
+    @objc
+    private func image(_ image: UIImage, didFinishSavingWithError error: Error?, contextInfo: UnsafeRawPointer) {
+        if let error = error {
+            showOKAlertWith(title: "Save error", message: error.localizedDescription)
+        } else {
+            showOKAlertWith(title: "Image saved")
+        }
+    }
+    
+    private func showOKAlertWith(title: String, message: String? = nil) {
+        let ac = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        ac.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
+        present(ac, animated: true)
     }
 
     private func applyProcessing() {
@@ -68,7 +93,7 @@ final class ViewController: UIViewController {
             currentFilter?.setValue(intensitySlider.value, forKey: kCIInputIntensityKey)
         }
         if inputKeys?.contains(kCIInputRadiusKey) ?? false {
-            currentFilter?.setValue(intensitySlider.value * 200, forKey: kCIInputRadiusKey)
+            currentFilter?.setValue(radiusSlader.value * 200, forKey: kCIInputRadiusKey)
         }
         if inputKeys?.contains(kCIInputScaleKey) ?? false {
             currentFilter?.setValue(intensitySlider.value * 10, forKey: kCIInputScaleKey)
@@ -95,6 +120,7 @@ final class ViewController: UIViewController {
         currentFilter = CIFilter(name: filterName)
         let beginImage = CIImage(image: currentImage)
         currentFilter?.setValue(beginImage, forKey: kCIInputImageKey)
+        filterButton.setTitle(filterName, for: .normal)
         applyProcessing()
     }
 }
