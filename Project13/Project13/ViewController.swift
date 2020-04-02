@@ -9,7 +9,7 @@
 import CoreImage
 import UIKit
 
-final class ViewController: UIViewController {
+final class ViewController: UIViewController, UINavigationControllerDelegate {
 
     @IBOutlet private weak var imageView: UIImageView!
     @IBOutlet private weak var intensitySlider: UISlider!
@@ -20,18 +20,7 @@ final class ViewController: UIViewController {
     private var context: CIContext?
     private var currentFilter: CIFilter?
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        title = "Instafilter"
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self
-            , action: #selector(didTapAdd))
-        
-        context = CIContext()
-        currentFilter = CIFilter(name: "CISepiaTone")
-    }
-
-    @IBAction func didTapChangeFilter(_ sender: UIButton) {
+    @IBAction private func didTapChangeFilter(_ sender: UIButton) {
         let ac = UIAlertController(title: "Choose", message: nil, preferredStyle: .actionSheet)
         ac.addAction(UIAlertAction(title: "CIBumpDistortion", style: .default, handler: setFilter))
         ac.addAction(UIAlertAction(title: "CIGaussianBlur", style: .default, handler: setFilter))
@@ -49,7 +38,7 @@ final class ViewController: UIViewController {
         present(ac, animated: true)
     }
     
-    @IBAction func didTapSave() {
+    @IBAction private func didTapSave() {
         guard let image = imageView.image else {
             showOKAlertWith(title: "You have no image")
             return
@@ -57,13 +46,25 @@ final class ViewController: UIViewController {
         UIImageWriteToSavedPhotosAlbum(image, self, #selector(image(_:didFinishSavingWithError:contextInfo:)), nil)
     }
 
-    @IBAction func intensityChanged() {
+    @IBAction private func intensityChanged() {
         applyProcessing()
     }
-    @IBAction func radiusChanged() {
+
+    @IBAction private func radiusChanged() {
         applyProcessing()
     }
-    
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        title = "Instafilter"
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self
+            , action: #selector(didTapAdd))
+        
+        context = CIContext()
+        currentFilter = CIFilter(name: "CISepiaTone")
+    }
+
     @objc
     private func didTapAdd() {
         let picker = UIImagePickerController()
@@ -116,7 +117,7 @@ final class ViewController: UIViewController {
             let currentImage = currentImage,
             let filterName = action.title
         else { return }
-        
+
         currentFilter = CIFilter(name: filterName)
         let beginImage = CIImage(image: currentImage)
         currentFilter?.setValue(beginImage, forKey: kCIInputImageKey)
@@ -136,7 +137,4 @@ extension ViewController: UIImagePickerControllerDelegate {
         currentFilter?.setValue(beginImage, forKey: kCIInputImageKey)
         applyProcessing()
     }
-}
-
-extension ViewController: UINavigationControllerDelegate {
 }
